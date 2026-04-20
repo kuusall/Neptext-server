@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import csv
 import json
 import pickle
 from collections import Counter
@@ -27,6 +28,31 @@ from models.sentiment_preprocessing import (
     sentiment_strength,
     text_signal_features,
 )
+
+
+def _read_five_class_dataset(csv_path: str | Path) -> list[tuple[str, int]]:
+    path = Path(csv_path)
+    if not path.exists():
+        return []
+
+    rows: list[tuple[str, int]] = []
+    with path.open("r", encoding="utf-8", newline="") as csv_file:
+        reader = csv.DictReader(csv_file)
+        for row in reader:
+            text = str(row.get("text", "")).strip()
+            label_raw = str(row.get("label", "")).strip()
+            if not text:
+                continue
+
+            try:
+                label = int(label_raw)
+            except ValueError:
+                continue
+
+            if 0 <= label < len(SENTIMENT_LABELS):
+                rows.append((text, label))
+
+    return rows
 
 
 def _upgrade_labels_to_five_classes(
@@ -120,6 +146,8 @@ def train_sentiment_model(
     output_path: str,
     output_pickle_path: str,
     metrics_path: str,
+    five_class_supplement_path: str | None = None,
+    five_class_supplement_weight: float = 0.35,
 ) -> dict[str, object]:
     rows = read_labeled_dataset(dataset_path)
     if len(rows) < 100:
@@ -130,6 +158,14 @@ def train_sentiment_model(
         raise ValueError("emoji dictionary could not be loaded")
 
     texts, labels, upgrade_stats, emoji_polarity = _upgrade_labels_to_five_classes(rows, emoji_dict_path)
+
+    base_count = len(texts)
+
+    supplement_rows: list[tuple[str, int]] = []
+    if five_class_supplement_path:
+        supplement_rows = _read_five_class_dataset(five_class_supplement_path)
+
+    upgrade_stats["five_class_supplement_rows"] = int(len(supplement_rows))
 
     train_idx, test_idx = train_test_split(
         np.arange(len(texts)),
@@ -142,6 +178,16 @@ def train_sentiment_model(
     test_texts = [texts[idx] for idx in test_idx]
     y_train = labels[train_idx]
     y_test = labels[test_idx]
+    w_train = np.ones(len(y_train), dtype=np.float32)
+
+    if supplement_rows:
+        train_texts.extend([text for text, _ in supplement_rows])
+        y_train = np.concatenate(
+            [y_train, np.asarray([label for _, label in supplement_rows], dtype=np.int32)]
+        )
+        w_train = np.concatenate(
+            [w_train, np.full(len(supplement_rows), five_class_supplement_weight, dtype=np.float32)]
+        )
 
     train_augmented = [augment_text_for_model(text, resources, emoji_polarity) for text in train_texts]
     test_augmented = [augment_text_for_model(text, resources, emoji_polarity) for text in test_texts]
@@ -187,7 +233,7 @@ def train_sentiment_model(
         C=2.0,
         random_state=42,
     )
-    classifier.fit(x_train, y_train)
+    classifier.fit(x_train, y_train, sample_weight=w_train)
 
     predictions = classifier.predict(x_test)
     accuracy = float(accuracy_score(y_test, predictions))
@@ -214,6 +260,8 @@ def train_sentiment_model(
         "emoji_polarity": emoji_polarity,
         "training_stats": {
             **upgrade_stats,
+            "base_rows": int(base_count),
+            "supplement_weight": float(five_class_supplement_weight),
             "train_size": int(len(train_idx)),
             "test_size": int(len(test_idx)),
             "accuracy": round(accuracy, 4),
@@ -274,6 +322,17 @@ def _parse_args() -> argparse.Namespace:
         default="model_dicts/sentiment_5class_metrics.json",
         help="Path for training metrics JSON",
     )
+    parser.add_argument(
+        "--five-class-supplement",
+        default="model_dicts/negative_sentences_5class.csv",
+        help="Optional CSV path with columns text,label already encoded in 5-class IDs",
+    )
+    parser.add_argument(
+        "--five-class-supplement-weight",
+        type=float,
+        default=0.35,
+        help="Training sample weight applied to supplement rows",
+    )
     return parser.parse_args()
 
 
@@ -285,5 +344,7 @@ if __name__ == "__main__":
         output_path=args.output,
         output_pickle_path=args.output_pickle,
         metrics_path=args.metrics,
+        five_class_supplement_path=args.five_class_supplement,
+        five_class_supplement_weight=args.five_class_supplement_weight,
     )
     print(json.dumps(result.get("summary", {}), ensure_ascii=False, indent=2))

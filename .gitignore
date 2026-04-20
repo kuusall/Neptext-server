@@ -214,3 +214,27 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Project-specific - Model files (large binary files)
+*.pt
+*.joblib
+*.pkl
+*.pth
+
+# Project-specific - Generated reports and outputs
+model_reports/
+
+# Project-specific - Training data and datasets
+*.csv
+*.xlsx
+*.xls
+model_dicts/*.csv
+model_dicts/*.xlsx
+
+# Project-specific - Environment/config with potential secrets
+config/env.py
+.env.local
+
+# Project-specific - OS files
+.DS_Store
+Thumbs.db

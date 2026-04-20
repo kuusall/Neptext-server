@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import csv
+import os
 import pickle
 import re
 import unicodedata
@@ -91,6 +92,41 @@ STRONG_NEGATIVE_HINTS = {
 }
 
 
+def _load_external_negative_hints() -> tuple[set[str], set[str]]:
+    base_dir = Path(__file__).resolve().parent.parent
+    model_dicts_dir = Path(os.getenv("MODEL_DICTS_DIR", "model_dicts"))
+    if not model_dicts_dir.is_absolute():
+        model_dicts_dir = base_dir / model_dicts_dir
+
+    default_path = model_dicts_dir / "negative_lexicon.txt"
+    lexicon_path = Path(os.getenv("NEGATIVE_LEXICON_PATH", str(default_path)))
+    if not lexicon_path.exists():
+        return set(), set()
+
+    token_hints: set[str] = set()
+    phrase_hints: set[str] = set()
+
+    for line in lexicon_path.read_text(encoding="utf-8").splitlines():
+        normalized = normalize_text(line)
+        if len(normalized) < 2:
+            continue
+
+        if " " in normalized:
+            phrase_hints.add(normalized)
+            for token in normalized.split(" "):
+                token = normalize_text(token)
+                if len(token) >= 2:
+                    token_hints.add(token)
+        else:
+            token_hints.add(normalized)
+
+    return token_hints, phrase_hints
+
+
+EXTERNAL_NEGATIVE_TOKEN_HINTS: set[str] = set()
+EXTERNAL_NEGATIVE_PHRASE_HINTS: set[str] = set()
+
+
 @dataclass
 class EmojiResources:
     alias_by_emoji: Dict[str, str]
@@ -101,6 +137,9 @@ def normalize_text(text: str) -> str:
     normalized = unicodedata.normalize("NFKC", text or "")
     normalized = normalized.replace("\u200d", "")
     return re.sub(r"\s+", " ", normalized).strip().lower()
+
+
+EXTERNAL_NEGATIVE_TOKEN_HINTS, EXTERNAL_NEGATIVE_PHRASE_HINTS = _load_external_negative_hints()
 
 
 def tokenize_words(text: str) -> List[str]:
@@ -222,6 +261,12 @@ def text_signal_features(
     neg_hint = sum(1 for token in tokens if token in NEGATIVE_HINTS)
     strong_pos = sum(1 for token in tokens if token in STRONG_POSITIVE_HINTS)
     strong_neg = sum(1 for token in tokens if token in STRONG_NEGATIVE_HINTS)
+
+    if EXTERNAL_NEGATIVE_TOKEN_HINTS:
+        neg_hint += sum(1 for token in tokens if token in EXTERNAL_NEGATIVE_TOKEN_HINTS)
+
+    if EXTERNAL_NEGATIVE_PHRASE_HINTS:
+        neg_hint += sum(1 for phrase in EXTERNAL_NEGATIVE_PHRASE_HINTS if phrase in normalized)
 
     emojis = extract_emojis(text, resources)
     alias_tokens: list[str] = []

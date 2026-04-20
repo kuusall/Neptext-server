@@ -2,69 +2,76 @@
   "summary": {
     "rows": 7989,
     "five_class_distribution": {
-      "negative": 1030,
-      "semi_negative": 1384,
-      "neutral": 1782,
-      "semi_positive": 2760,
-      "positive": 1033
+      "negative": 2147,
+      "semi_negative": 1015,
+      "neutral": 1098,
+      "semi_positive": 3068,
+      "positive": 661
     },
     "label_thresholds": {
       "negative_cut": 0.55,
       "positive_cut": 1.25,
       "negative_positive_conflict_cut": 0.35,
       "zero_signal_strength_band": 0.05,
-      "zero_signal_token_cut": 11,
+      "zero_signal_token_cut": 7,
       "neutral_band": 1.35
     },
     "emoji_polarity_size": 70,
+    "five_class_supplement_rows": 1885,
+    "base_rows": 7989,
+    "supplement_weight": 0.35,
     "train_size": 6790,
     "test_size": 1199,
-    "accuracy": 0.7139,
-    "macro_f1": 0.718,
-    "weighted_f1": 0.7161
+    "accuracy": 0.7198,
+    "macro_f1": 0.7011,
+    "weighted_f1": 0.7213
+  },
+  "artifacts": {
+    "joblib": "model_dicts\\sentiment_5class_model.joblib",
+    "pickle": "model_dicts\\sentiment_5class_model.pkl"
   },
   "classification_report": {
     "negative": {
-      "precision": 0.6911764705882353,
-      "recall": 0.6064516129032258,
-      "f1-score": 0.6460481099656358,
-      "support": 155.0
+      "precision": 0.7164634146341463,
+      "recall": 0.7298136645962733,
+      "f1-score": 0.7230769230769231,
+      "support": 322.0
     },
     "semi_negative": {
-      "precision": 0.6090534979423868,
-      "recall": 0.7115384615384616,
-      "f1-score": 0.656319290465632,
-      "support": 208.0
+      "precision": 0.43125,
+      "recall": 0.45394736842105265,
+      "f1-score": 0.4423076923076923,
+      "support": 152.0
     },
     "neutral": {
-      "precision": 0.5674740484429066,
-      "recall": 0.6142322097378277,
-      "f1-score": 0.5899280575539568,
-      "support": 267.0
+      "precision": 0.6571428571428571,
+      "recall": 0.696969696969697,
+      "f1-score": 0.6764705882352942,
+      "support": 165.0
     },
     "semi_positive": {
-      "precision": 0.8221024258760108,
-      "recall": 0.7367149758454107,
-      "f1-score": 0.7770700636942676,
-      "support": 414.0
+      "precision": 0.8305882352941176,
+      "recall": 0.7657266811279827,
+      "f1-score": 0.7968397291196389,
+      "support": 461.0
     },
     "positive": {
-      "precision": 0.90625,
-      "recall": 0.9354838709677419,
-      "f1-score": 0.9206349206349206,
-      "support": 155.0
+      "precision": 0.8198198198198198,
+      "recall": 0.9191919191919192,
+      "f1-score": 0.8666666666666667,
+      "support": 99.0
     },
-    "accuracy": 0.7139282735613011,
+    "accuracy": 0.7197664720600501,
     "macro avg": {
-      "precision": 0.7192112885699079,
-      "recall": 0.7208842261985335,
-      "f1-score": 0.7180000884628825,
+      "precision": 0.6910528653781882,
+      "recall": 0.713129866061385,
+      "f1-score": 0.701072319881243,
       "support": 1199.0
     },
     "weighted avg": {
-      "precision": 0.7223938329942597,
-      "recall": 0.7139282735613011,
-      "f1-score": 0.7160701250177405,
+      "precision": 0.7245564049820825,
+      "recall": 0.7197664720600501,
+      "f1-score": 0.72128632247249,
       "support": 1199.0
     }
   }
