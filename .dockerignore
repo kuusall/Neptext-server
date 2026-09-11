@@ -1,0 +1,23 @@
+# Git
+.git
+.gitignore
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+.pytest_cache/
+.env
+
+# Documentation & Meta
+*.md
+test.sh
+
+# Unnecessary directories
+old/
+scripts/
+
+# Datasets (not needed for inference)
+model_dicts/*.csv
+model_dicts/*.txt
