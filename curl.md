@@ -2,14 +2,14 @@
 
 Base URL:
 
-- `http://127.0.0.1:8000`
+- `https://neptext-server-production.up.railway.app`
 
 ## 1) Health Check
 
 ### Request
 
 ```bash
-curl -X GET "http://127.0.0.1:8000/health"
+curl -X GET "https://neptext-server-production.up.railway.app/health"
 ```
 
 ### Response
@@ -26,7 +26,7 @@ curl -X GET "http://127.0.0.1:8000/health"
 ### Request
 
 ```bash
-curl -X POST "http://127.0.0.1:8000/sentiment" \
+curl -X POST "https://neptext-server-production.up.railway.app/sentiment" \
   -H "Content-Type: application/json" \
   -d "{\"text\":\"यो movie ramro cha 😊 10/10\"}"
 ```
@@ -84,7 +84,7 @@ Frontend should read:
 ### Frontend Fetch Example
 
 ```bash
-curl -X POST "http://127.0.0.1:8000/sentiment" \
+curl -X POST "https://neptext-server-production.up.railway.app/sentiment" \
   -H "Content-Type: application/json" \
   -d "{\"text\":\"यो नीतिमा केही सुधार चाहिन्छ तर पूर्ण नराम्रो छैन\"}"
 ```
@@ -94,7 +94,7 @@ curl -X POST "http://127.0.0.1:8000/sentiment" \
 ### Request (suggest-only)
 
 ```bash
-curl -X POST "http://127.0.0.1:8000/spell-correct" \
+curl -X POST "https://neptext-server-production.up.railway.app/spell-correct" \
   -H "Content-Type: application/json" \
   -d "{\"text\":\"म नेपाल जाान्छु।\",\"suggest_only\":true}"
 ```
@@ -119,7 +119,7 @@ curl -X POST "http://127.0.0.1:8000/spell-correct" \
 ### Request (auto-correct)
 
 ```bash
-curl -X POST "http://127.0.0.1:8000/spell-correct" \
+curl -X POST "https://neptext-server-production.up.railway.app/spell-correct" \
   -H "Content-Type: application/json" \
   -d "{\"text\":\"म नेपाल जाान्छु।\",\"suggest_only\":false}"
 ```
@@ -131,7 +131,7 @@ Word prediction is now context-aware. It uses recent token windows and reranking
 ### Request
 
 ```bash
-curl -X POST "http://127.0.0.1:8000/word-predict" \
+curl -X POST "https://neptext-server-production.up.railway.app/word-predict" \
   -H "Content-Type: application/json" \
   -d "{\"text\":\"यो नीतिमा सुधार\",\"top_k\":5}"
 ```
@@ -180,5 +180,5 @@ uvicorn app:app --reload
 
 OpenAPI Docs:
 
-- `http://127.0.0.1:8000/docs`
-- `http://127.0.0.1:8000/redoc`
+- `https://neptext-server-production.up.railway.app/docs`
+- `https://neptext-server-production.up.railway.app/redoc`

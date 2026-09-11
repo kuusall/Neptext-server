@@ -45,7 +45,7 @@ Neptext Server is a high-performance FastAPI-based REST API designed for advance
    ```bash
    uvicorn app:app --reload
    ```
-   The server will start at `http://127.0.0.1:8000`.
+   The server will start at `https://neptext-server-production.up.railway.app`.
 
 ### Docker Deployment (Recommended)
 
@@ -62,15 +62,15 @@ docker run -p 8000:8000 neptext-server
 ## 🔌 API Usage
 
 Once the server is running, you can access the interactive API documentation at:
-- **Swagger UI**: `http://localhost:8000/docs`
-- **ReDoc**: `http://localhost:8000/redoc`
+- **Swagger UI**: `https://neptext-server-production.up.railway.app/docs`
+- **ReDoc**: `https://neptext-server-production.up.railway.app/redoc`
 
 ### Example Endpoints
 
 #### 1. Sentiment Analysis
 **Endpoint**: `POST /sentiment`
 ```bash
-curl -X POST "http://localhost:8000/sentiment" \
+curl -X POST "https://neptext-server-production.up.railway.app/sentiment" \
   -H "Content-Type: application/json" \
   -d '{"text":"यो movie ramro cha 😊"}'
 ```
@@ -78,7 +78,7 @@ curl -X POST "http://localhost:8000/sentiment" \
 #### 2. Spell Correction
 **Endpoint**: `POST /spell-correct`
 ```bash
-curl -X POST "http://localhost:8000/spell-correct" \
+curl -X POST "https://neptext-server-production.up.railway.app/spell-correct" \
   -H "Content-Type: application/json" \
   -d '{"text":"म नेपाल जाान्छु।", "suggest_only": true}'
 ```
@@ -86,7 +86,7 @@ curl -X POST "http://localhost:8000/spell-correct" \
 #### 3. Word Prediction
 **Endpoint**: `POST /word-predict`
 ```bash
-curl -X POST "http://localhost:8000/word-predict" \
+curl -X POST "https://neptext-server-production.up.railway.app/word-predict" \
   -H "Content-Type: application/json" \
   -d '{"text":"यो नीतिमा सुधार", "top_k": 5}'
 ```

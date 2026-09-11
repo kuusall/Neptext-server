@@ -2,7 +2,7 @@
 
 set -u
 
-BASE_URL="${BASE_URL:-http://127.0.0.1:8000}"
+BASE_URL="${BASE_URL:-https://neptext-server-production.up.railway.app}"
 API_PREFIX="${API_PREFIX:-}"
 
 PASS_COUNT=0
