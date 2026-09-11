@@ -1,5 +1,5 @@
 # Use a lightweight Python environment
-FROM python:3.10-slim
+FROM python:3.11-slim
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
