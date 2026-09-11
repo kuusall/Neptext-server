@@ -2,6 +2,10 @@
 
 Neptext Server is a high-performance FastAPI-based REST API designed for advanced Nepali text processing. It provides a suite of Natural Language Processing (NLP) tools, including sentiment analysis, context-aware word prediction, and rule-based spell correction.
 
+## Use of claude :
+
+This is deployed in railway through docker image. So, claude contributed to just the API connection and Deployment part of it. FastAPI deployed in Railway for the 3 Models to run. FYI 
+
 ## 🚀 Features
 
 - **Sentiment Analysis**: Classifies Nepali text into 5 distinct sentiment levels: `positive`, `semi_positive`, `neutral`, `semi_negative`, and `negative`.
